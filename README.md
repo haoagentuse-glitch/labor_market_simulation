@@ -23,8 +23,9 @@ labor_market_simulation/
 │       ├── model.py        引擎：三純量一規則、排序匹配、指標、體制分類
 │       └── plotutil.py     中文字型設定
 ├── scripts/                執行腳本（匯入 labor_sim 套件）
-│   ├── run.py              三情境時間序列圖
-│   └── sweep.py            兩張相圖
+│   ├── run.py              三情境時間序列圖（結果指標）
+│   ├── sweep.py            兩張相圖（結果指標）
+│   └── process.py          兩張過程／機制圖（職業結構、技能演化）
 ├── docs/                   設計文件 v1→v4（減法重構的演進）
 │   ├── v1.md  v2.md  v3.md  v4.md
 └── figures/                產生的圖（git 忽略內容，保留資料夾）
@@ -37,7 +38,17 @@ uv sync                              # 安裝依賴並以 editable 安裝 labor_
 uv run python -m labor_sim.model     # 冒煙測試：終端機印三情境末段指標
 uv run python scripts/run.py         # 時間序列圖 → figures/baseline_timeseries.png
 uv run python scripts/sweep.py       # 兩張相圖（GRID=13、SEEDS=3，約 1000 次模擬）
+uv run python scripts/process.py     # 兩張過程圖 → figures/occupation_structure.png、skill_evolution.png
 ```
+
+### 結果圖 vs 過程圖
+
+`run.py`／`sweep.py` 給的是**結果指標**（就業率、Gini、集中度…）；`process.py` 給的是**中間機制**，用來解釋因果：
+
+- `occupation_structure.png`：各職業層級（依 σ 切）人口比例、AI 替代率、新職業生成率。
+- `skill_evolution.png`：平均技能值、再訓練成功率、技能需求 vs 供給的落差。
+
+> 註：v4 把「職業」收成單一 σ、把「技能」收成單一 a，所以「職業層級」＝σ 區間、「技能」＝能力 a。為了讓「再訓練成功率」有意義，新增了最小的失業者再訓練機制（參數 `retrain_rate`，預設 0），這正是 v4 §6 規劃的第二個回饋。
 
 ## 兩個核心旋鈕（整張相圖的骨幹）
 
