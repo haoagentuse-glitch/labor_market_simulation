@@ -1,0 +1,36 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+*.so
+
+# --- 虛擬環境 / uv ---
+.venv/
+venv/
+env/
+.python-version
+# 注意：uv.lock 應該提交（保證可重現），不要忽略
+
+# --- 測試 / 型別 / 覆蓋率 ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- 產生的輸出（圖檔） ---
+figures/*
+!figures/.gitkeep
+
+# --- 編輯器 / 作業系統 ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+.fuse_hidden*
