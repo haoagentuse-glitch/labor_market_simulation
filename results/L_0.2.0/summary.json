@@ -1,0 +1,95 @@
+{
+  "_version": "L_0.2.0",
+  "baseline": {
+    "崩潰 r≫g (無學習)": {
+      "regime": "collapse",
+      "employment_final": 0.022,
+      "gini_all_final": 0.9802208987682319,
+      "gini_employed_final": 0.10094994401053037,
+      "top10_final": 1.0,
+      "human_zone_final": 0.32200000000000006
+    },
+    "拉鋸 r≈g": {
+      "regime": "reallocation",
+      "employment_final": 0.567,
+      "gini_all_final": 0.5063734804161633,
+      "gini_employed_final": 0.1294064910337982,
+      "top10_final": 0.23534768020597666,
+      "human_zone_final": 0.5609999999999999
+    },
+    "重配置 g≥r": {
+      "regime": "reallocation",
+      "employment_final": 0.7815,
+      "gini_all_final": 0.3677189597089858,
+      "gini_employed_final": 0.19093916789377574,
+      "top10_final": 0.1964593371863223,
+      "human_zone_final": 0.8
+    }
+  },
+  "phase_macro": {
+    "metric": "末段就業率(最後12步均值)",
+    "emp_crit_for_r_star": 0.5,
+    "r_star_min": 0.001,
+    "r_star_max": 0.004287284329945639,
+    "r_star_mean": 0.003364990347872714,
+    "r_star_vs_g_slope": 0.42544807947630453,
+    "interpretation": "slope≈0 → 臨界線近垂直、前沿速度結構性主宰命運；slope 越大 → 學習 g 越能把臨界往右推。",
+    "emp_min": 0.0,
+    "emp_max": 0.9289999999999999
+  },
+  "phase_distribution": {
+    "metric_old": "頂端10%份額(含失業者)",
+    "metric_clean": "在職者Gini(earnings>0)",
+    "top10_trend_heavy_minus_homog": -0.5828073797609246,
+    "gini_emp_trend_heavy_minus_homog": 0.12839409912098979,
+    "verdict": "若 gini_emp_trend>0（重尾→更集中），則 L_0.1.0「能力越均質越集中」為就業汙染假象，被推翻；若仍≤0，則該反直覺結論在乾淨指標下成立。",
+    "top10_min": 0.3497338396718126,
+    "top10_max": 1.0,
+    "gini_emp_min": 0.011372217548418865,
+    "gini_emp_max": 0.3577010795896169
+  },
+  "process": {
+    "seeds": 16,
+    "regimes": [
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation",
+      "reallocation"
+    ],
+    "ai_substitution_final": 0.2965983461622709,
+    "new_job_rate_final": 0.7962547041109869,
+    "unemployment_final": 0.4345,
+    "unmet_demand_final": 0.0,
+    "demand_median_final": 1.4184947217432842,
+    "supply_median_final": 1.2677427109123145,
+    "hollowing_check": "看 process_occupation.csv 的 occ_mid_med 末段相對初期是否下降",
+    "robust_note": "分位帶窄 → 現象非單一 seed 特例。"
+  },
+  "sensitivity": {
+    "params_varied": [
+      "F0",
+      "ability_median",
+      "task_density"
+    ],
+    "factors": [
+      0.8,
+      1.0,
+      1.2
+    ],
+    "seeds": 5,
+    "regime_flips_under_pm20pct": [],
+    "verdict": "無翻面 → 三情境結論對尺度校準穩健；有翻面 → 該結論靠近相界、對尺度敏感，需標註。"
+  }
+}

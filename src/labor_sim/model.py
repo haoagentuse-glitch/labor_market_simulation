@@ -65,6 +65,7 @@ class Params:
 
     # --- 分配結局：能力尾巴 × 價值凸度 ---
     ability_sigma: float = 0.5    # 能力 lognormal 的 sigma（尾巴重度）
+    ability_median: float = 0.5   # 能力分佈中位數錨點（尺度校準，預設 0.5；僅敏感度檢查時掃描）
     V_curvature: float = 2.0      # V(sigma)=sigma^k 的 k
 
     # --- 其他 ---
@@ -88,10 +89,12 @@ class Result:
     F: np.ndarray
     sigma_max: np.ndarray
     employment_rate: np.ndarray
-    gini: np.ndarray
+    gini: np.ndarray              # 全體 Gini（含失業者收入 0）—— 受就業水準汙染
     top10_share: np.ndarray
     human_zone: np.ndarray
     final_ability: np.ndarray
+    # B-1：在職者 Gini（只算 earnings>0）—— 把集中度與就業水準分開。
+    gini_employed: np.ndarray = field(default=None, repr=False)
     regime: str = ""
     history_earnings_last: np.ndarray = field(default=None, repr=False)
 
@@ -115,8 +118,8 @@ def _make_ability(p: Params, rng) -> np.ndarray:
     能力分佈：lognormal，中位數錨定在 0.5，使前沿 F（約 0.2→0.9）掃過分佈主體。
     ability_sigma 控制尾巴重度（同時左右散開，重尾＝少數人遠高、多數人偏低）。
     """
-    # lognormal(0, sigma) 的中位數為 1；乘 0.5 後中位數 = 0.5
-    return 0.5 * rng.lognormal(mean=0.0, sigma=p.ability_sigma, size=p.n_workers)
+    # lognormal(0, sigma) 的中位數為 1；乘 ability_median 後中位數 = ability_median（預設 0.5）
+    return p.ability_median * rng.lognormal(mean=0.0, sigma=p.ability_sigma, size=p.n_workers)
 
 
 def _match(a: np.ndarray, sigma_tasks: np.ndarray, k: float):
@@ -162,6 +165,7 @@ def run_sim(p: Params | None = None, **kw) -> Result:
     S = p.steps
     F_hist = np.empty(S); smax_hist = np.empty(S)
     emp_hist = np.empty(S); gini_hist = np.empty(S)
+    gini_emp_hist = np.empty(S)        # B-1：在職者 Gini
     top_hist = np.empty(S); zone_hist = np.empty(S)
     # 過程量
     occ_hist = np.zeros((S, 5))
@@ -197,6 +201,8 @@ def run_sim(p: Params | None = None, **kw) -> Result:
         smax_hist[t] = sigma_max
         emp_hist[t] = float(emp_mask.mean())
         gini_hist[t] = gini(earn)
+        # 在職者 Gini：只在賺到錢的人之間算，去掉失業者一堆 0 對集中度的汙染。
+        gini_emp_hist[t] = gini(earn[emp_mask]) if emp_mask.any() else np.nan
         top_hist[t] = top_share(earn, 0.10)
         zone_hist[t] = max(sigma_max - F, 0.0)
 
@@ -239,6 +245,7 @@ def run_sim(p: Params | None = None, **kw) -> Result:
         employment_rate=emp_hist, gini=gini_hist,
         top10_share=top_hist, human_zone=zone_hist,
         final_ability=a, history_earnings_last=last_earn,
+        gini_employed=gini_emp_hist,
         occ_shares=occ_hist, ai_substitution=ai_sub_hist, new_job_rate=newjob_hist,
         mean_ability=mean_a_hist, mean_ability_emp=mean_a_emp_hist,
         retrain_success=retrain_hist,
@@ -281,5 +288,6 @@ if __name__ == "__main__":
         print(f"{name:22s} | regime={res.regime:13s} "
               f"emp={res.employment_rate[-1]:.2f} "
               f"gini={res.gini[-1]:.2f} "
+              f"gini_emp={res.gini_employed[-1]:.2f} "
               f"top10={res.top10_share[-1]:.2f} "
               f"zone={res.human_zone[-1]:.2f}")

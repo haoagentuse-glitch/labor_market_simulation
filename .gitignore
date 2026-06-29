@@ -22,9 +22,18 @@ env/
 .coverage
 htmlcov/
 
-# --- 產生的輸出（圖檔） ---
+# --- 產生的輸出（舊版 flat 圖檔，已棄用，保留資料夾） ---
 figures/*
 !figures/.gitkeep
+
+# --- 版本化結果 results/<版本>/ ---
+# 規則：data/CSV、summary.json、manifest.json 進版控（輕量、可 diff、可重現）；
+#       figures/PNG 忽略（可由腳本重生）。
+results/**/figures/
+results/*/figures/
+
+# --- 私人筆記（只給自己看，不上傳） ---
+_private_notes/
 
 # --- 編輯器 / 作業系統 ---
 .vscode/

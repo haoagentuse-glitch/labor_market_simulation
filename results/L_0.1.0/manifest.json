@@ -1,0 +1,9 @@
+{
+  "_version": "L_0.1.0",
+  "_note": "第一輪結果快照（前置儀器化之前）。圖檔由舊版 figures/L_0.1.0/ 遷入；當時腳本尚未匯出文字版 data/CSV 與 summary.json，故本版本僅有 figures/。完整文字版資料自 L_0.2.0 起提供。深入檢討見 docs/RESEARCH_REVIEW_v0.1.0.md。",
+  "scripts": {
+    "run.py": {"figures": ["baseline_timeseries.png"]},
+    "sweep.py": {"figures": ["phase_macro.png", "phase_distribution.png"]},
+    "process.py": {"figures": ["occupation_structure.png", "skill_evolution.png"]}
+  }
+}

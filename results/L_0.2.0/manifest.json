@@ -1,0 +1,106 @@
+{
+  "_version": "L_0.2.0",
+  "_git_hash": "b91baff",
+  "_updated_utc": "2026-06-29T03:06:18Z",
+  "scripts": {
+    "run.py": {
+      "ran_utc": "2026-06-29T01:40:29Z",
+      "params": {
+        "崩潰 r≫g (無學習)": {
+          "r": 0.005,
+          "human_learning": 0.0
+        },
+        "拉鋸 r≈g": {
+          "r": 0.004,
+          "human_learning": 0.004
+        },
+        "重配置 g≥r": {
+          "r": 0.003,
+          "human_learning": 0.006
+        }
+      },
+      "seeds": [
+        0
+      ],
+      "notes": "三情境時間序列；含 gini_employed 對照"
+    },
+    "sweep.py": {
+      "ran_utc": "2026-06-29T01:56:53Z",
+      "params": {
+        "GRID": 13,
+        "SEEDS": 3,
+        "EMP_CRIT": 0.5
+      },
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "notes": "r掃[0.001,0.007] g掃[0,0.008] sigma掃[0.2,1.2] k掃[0.5,3.0]"
+    },
+    "process.py": {
+      "ran_utc": "2026-06-29T03:05:00Z",
+      "params": {
+        "r": 0.004,
+        "human_learning": 0.004,
+        "retrain_rate": 0.002
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "notes": "多種子過程診斷；分位帶 10-90"
+    },
+    "sensitivity.py": {
+      "ran_utc": "2026-06-29T03:06:18Z",
+      "params": {
+        "SCENARIOS": {
+          "collapse": {
+            "r": 0.005,
+            "human_learning": 0.0
+          },
+          "tug": {
+            "r": 0.004,
+            "human_learning": 0.004
+          },
+          "realloc": {
+            "r": 0.003,
+            "human_learning": 0.006
+          }
+        },
+        "BASE": {
+          "F0": 0.2,
+          "ability_median": 0.5,
+          "task_density": 2000.0
+        },
+        "FACTORS": [
+          0.8,
+          1.0,
+          1.2
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "notes": "±20% 尺度敏感度"
+    }
+  }
+}
