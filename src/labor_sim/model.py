@@ -72,6 +72,11 @@ class Params:
     frontier_noise: float = 0.03  # 前沿毛邊 eps
     human_learning: float = 0.0   # g：在崗者能力緩升（宏觀體制決定者，見 v4 §0.5）
     retrain_rate: float = 0.0     # 失業者再訓練時的能力成長（第二個回饋，預設關）
+
+    # --- L_0.2.1 地基補丁（預設 None = 舊行為，向後相容，L_0.2.0 可重現） ---
+    tasks_per_worker: float | None = None  # 設定→反推 task_density 使 t=0 人類任務/工人=此值（消除槽位假性失業）
+    ability_ceiling: float | None = None   # 設定→學習改飽和式 a += g·(ceiling−a)，取代無上限複利
+
     seed: int = 0
 
 
@@ -162,6 +167,13 @@ def run_sim(p: Params | None = None, **kw) -> Result:
 
     a = _make_ability(p, rng)
 
+    # L_0.2.1 槽位校準：若指定 tasks_per_worker，反推 task_density 使 t=0 人類任務數 = ratio × n_workers
+    # （t=0 人類任務 ≈ task_density × (σ_max0 − F0)）。未指定則沿用 p.task_density（舊行為）。
+    task_density = p.task_density
+    if p.tasks_per_worker is not None:
+        span0 = max(1e-9, p.sigma_max0 - p.F0)
+        task_density = p.tasks_per_worker * p.n_workers / span0
+
     S = p.steps
     F_hist = np.empty(S); smax_hist = np.empty(S)
     emp_hist = np.empty(S); gini_hist = np.empty(S)
@@ -184,7 +196,7 @@ def run_sim(p: Params | None = None, **kw) -> Result:
         sigma_max = p.sigma_max0 + p.c * t
 
         # 本步任務：固定密度 → 任務數隨 sigma_max 等比成長，使 r=c 時人類區工作量中性
-        n_tasks_t = max(1, int(round(p.task_density * sigma_max)))
+        n_tasks_t = max(1, int(round(task_density * sigma_max)))
         sigma = rng.uniform(0.0, sigma_max, size=n_tasks_t)
 
         # 毛邊前沿：每個任務的有效門檻 = F + 雜訊
@@ -237,7 +249,10 @@ def run_sim(p: Params | None = None, **kw) -> Result:
         # --- 回饋：在崗者學習(g) / 失業者再訓練(retrain_rate) ---
         if p.human_learning > 0 or p.retrain_rate > 0:
             growth = np.where(emp_mask, p.human_learning, p.retrain_rate)
-            a = a * (1.0 + growth)
+            if p.ability_ceiling is not None:
+                a = a + growth * (p.ability_ceiling - a)   # L_0.2.1 飽和：趨近 ceiling、永不超過
+            else:
+                a = a * (1.0 + growth)                     # 舊：無上限複利
 
     res = Result(
         params=p,

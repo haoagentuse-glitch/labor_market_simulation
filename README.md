@@ -1,6 +1,7 @@
 # labor-sim — AI 時代勞動市場演化模擬（最小核心 v4）
 
-第一性原理的最小實作：**三個純量 + 一條規則**，讓替代、協作、逃跑賽跑、集中／壓縮全部從規則**浮現**，而非被設定。設計演進見 `docs/`。
+第一性原理的最小實作：**三個純量 + 一條規則**，讓替代、協作、逃跑賽跑、集中／壓縮全部從規則**浮現**，而非被設定。
+完整演進見 `docs/05_evolution.md`；文件地圖與進度見 `docs/00_index.md`；歸檔規則見 `docs/01_sop.md`。
 
 ```
 task : σ   任務離 AI 前沿多遠（需要多少「賦予結構」的能力）
@@ -13,42 +14,37 @@ AI   : F(t) 前沿，隨時間以速度 r 上爬
 
 ```
 labor_market_simulation/
-├── pyproject.toml          專案與依賴（hatchling 建置、可安裝套件）
-├── uv.lock                 鎖定版本（已提交）
-├── README.md
-├── .gitignore
-├── src/
-│   └── labor_sim/          核心套件
-│       ├── __init__.py
-│       ├── model.py        引擎：三純量一規則、排序匹配、指標、體制分類
-│       └── plotutil.py     中文字型設定
-├── scripts/                執行腳本（匯入 labor_sim 套件）
-│   ├── run.py              三情境時間序列圖（結果指標）
-│   ├── sweep.py            兩張相圖（結果指標）
-│   └── process.py          兩張過程／機制圖（職業結構、技能演化）
-├── docs/                   設計文件 v1→v4（減法重構的演進）
-│   ├── v1.md  v2.md  v3.md  v4.md
-└── figures/                產生的圖（git 忽略內容，保留資料夾）
+├── README.md  pyproject.toml  uv.lock  .gitignore
+├── src/labor_sim/          核心套件
+│   ├── model.py            引擎：三純量一規則、排序匹配、指標、體制分類
+│   ├── output.py           版本化輸出：results/<版本>/{figures,data}+summary+manifest
+│   └── plotutil.py         中文字型設定
+├── scripts/                執行腳本（匯入 labor_sim；輸出到 results/<版本>/）
+│   ├── run.py              三情境時間序列（L_0.2.0）
+│   ├── sweep.py            相圖 + r*(g) 臨界曲線
+│   ├── process.py          過程圖（多種子 + 分位帶）
+│   ├── sensitivity.py      ±20% 尺度敏感度
+│   └── run_v021.py         L_0.2.1 地基校準基線（槽位校準 + 飽和學習）
+├── docs/                   文件（扁平單層，檔名 = 類別碼_類別_定位符，見 docs/01_sop.md）
+│   └── 00_index.md         ← 文件地圖與進度，先讀這
+├── results/<版本>/         版本化結果（figures 忽略、data/summary/manifest 進版控）
+└── _private_notes/         私人筆記（白話解釋、名詞表、CODE_GUIDE）
 ```
 
 ## 快速開始（uv）
 
 ```bash
-uv sync                              # 安裝依賴並以 editable 安裝 labor_sim
-uv run python -m labor_sim.model     # 冒煙測試：終端機印三情境末段指標
-uv run python scripts/run.py         # 時間序列圖 → figures/baseline_timeseries.png
-uv run python scripts/sweep.py       # 兩張相圖（GRID=13、SEEDS=3，約 1000 次模擬）
-uv run python scripts/process.py     # 兩張過程圖 → figures/occupation_structure.png、skill_evolution.png
+uv sync                                   # 安裝依賴並以 editable 安裝 labor_sim
+uv run python -m labor_sim.model          # 冒煙測試：印三情境末段指標
+uv run python scripts/run.py              # 三情境時間序列 → results/L_0.2.0/
+uv run python scripts/sweep.py            # 相圖 + r*(g)（GRID=13, SEEDS=3）
+uv run python scripts/process.py          # 過程圖（16 種子 + 分位帶）
+uv run python scripts/sensitivity.py      # 尺度敏感度
+uv run python scripts/run_v021.py         # L_0.2.1 地基校準基線 → results/L_0.2.1/
 ```
 
-### 結果圖 vs 過程圖
-
-`run.py`／`sweep.py` 給的是**結果指標**（就業率、Gini、集中度…）；`process.py` 給的是**中間機制**，用來解釋因果：
-
-- `occupation_structure.png`：各職業層級（依 σ 切）人口比例、AI 替代率、新職業生成率。
-- `skill_evolution.png`：平均技能值、再訓練成功率、技能需求 vs 供給的落差。
-
-> 註：v4 把「職業」收成單一 σ、把「技能」收成單一 a，所以「職業層級」＝σ 區間、「技能」＝能力 a。為了讓「再訓練成功率」有意義，新增了最小的失業者再訓練機制（參數 `retrain_rate`，預設 0），這正是 v4 §6 規劃的第二個回饋。
+> 版本字串由 `src/labor_sim/output.py` 的 `_DEFAULT_VERSION` 或環境變數 `LSIM_VERSION` 決定。
+> 每支腳本每產一張圖，同步寫對應 `data/*.csv` 與 `summary.json`，讀結論走文字、不走像素。
 
 ## 兩個核心旋鈕（整張相圖的骨幹）
 
@@ -57,28 +53,19 @@ uv run python scripts/process.py     # 兩張過程圖 → figures/occupation_st
 分配結局：  ability_sigma（能力尾巴） × k（價值凸度） → 集中 / 壓縮
 ```
 
-## 實作中浮現的第一個發現（minimal model 的用途正在於此）
+## L_0.2.1 地基旋鈕（預設關、向後相容）
 
-原 v4 把宏觀賽跑設為「前沿速度 r vs 任務生成速度 c」。實作後發現：**靜態能力下，前沿 F 掃過固定能力分佈，會讓所有 a<F 的人失業；而任務生成 c 只在前沿之上加任務（只有高能力者能接），救不了被替代者。** 因此純靜態核心只會走向**崩潰**。
+- `tasks_per_worker`：校準 t=0 人類任務/工人比，消除「槽位假性失業」（約 25% 的人為地板）。
+- `ability_ceiling`：學習改飽和式 `a += g·(ceiling−a)`，取代無上限複利。
 
-真正切換「崩潰 ↔ 重配置」的，是**人類適應速度 g（學習）與前沿速度 r 的賽跑**——這正是要加入的第一個回饋。模型已內建 `human_learning`，宏觀相圖改掃 `r × g`：
+## 目前狀態（單一事實來源：docs/00_index.md）
 
-- `r ≫ g`：前沿跑贏學習 → 就業崩潰。
-- `g ≳ r`：學習跟上 → 在崗者持續爬升、就業穩住（重配置）。
-
-> 這是減法式最小模型該有的價值：它**否證**了 naive 的 r-vs-c 故事，並指出下一步該加什麼。
-
-## 可證偽性檢驗
-
-把能力尾巴調平、`k` 調到 1，若頂端集中仍不消失，代表機制錯了——這是 v3 的 O-ring 版本（把凸度結構性寫死）做不到的檢驗。
-
-## 下一步（一次加一個回饋，見 docs/v4.md §6）
-
-1. 內生前沿（learning-by-doing）：被部署越多的 σ 區間，F 爬越快 → 臨界點。
-2. 擁擠效應：高 σ 端湧入越多人，溢酬遞減 → 分配分岔。
-3. 需求迴路：就業/所得 → 任務生成 → 連鎖崩潰或良性成長。
+- **v4** 核心穩定；**L_0.2.0** 完成量測校準（推翻「越均質越集中」的量測假象、量化 r\*(g)）。
+- **L_0.2.1** 地基校準已執行：槽位校準＋飽和學習後，三情境 regime 完全不變（方向穩健）。
+- 概念上正探索 **λ 可表徵性 × ν 回饋密度** 的任務空間（`docs/10_concept_v4_task-ontology.md`，尚未實作）；
+  另有終局開放性的候選機制清單（`docs/40_log_20260703_open-endgame-discussion.md`）。
 
 ## 備註
 
-- 若 `.venv/` 是在沙箱（fuse 檔案系統）建到一半壞掉的，刪掉重跑 `uv sync` 即可；在本機 uv 運作正常。
 - 引擎是純 numpy，單次 240 步模擬約毫秒級。
+- 若 `.venv/` 在沙箱建到一半壞掉，刪掉重跑 `uv sync`。

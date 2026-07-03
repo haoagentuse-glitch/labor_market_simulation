@@ -1,7 +1,10 @@
+> 類別:raw | 狀態:frozen | 歸檔:2026-07-01
+> L_0.2.0 的起跑簡報,該輪已完成(見 `30_exp_L0.2.0.md`);本檔存查,檔內連結允許失效。
+
 # 下一個 Task 啟動簡報：檢討與迭代
 
 > 用途：給「檢討 + 迭代」這個新 task 一個完整的起跑點。讀完這份，你（或新的對話）就能在不重讀全部歷史的情況下，知道**專案長什麼樣、哪些是重點、這個 task 要決定什麼**。
-> 關聯文件：設計 `docs/v4.md`；結果 `docs/RESEARCH_REVIEW_v0.1.0.md`；程式 `docs/CODE_GUIDE.md`；白話詞表 `private_notes/名詞解釋.md`。
+> 關聯文件：設計 `docs/spec/v4.md`；結果 `docs/implementation/RESEARCH_REVIEW_v0.1.0.md`；程式 `_private_notes/CODE_GUIDE.md`；白話詞表 `private_notes/名詞解釋.md`。
 
 ---
 
@@ -29,8 +32,8 @@
 | `scripts/sweep.py` | 相圖（參數掃描） | ★★★ 驗證/重跑靠它 |
 | `scripts/process.py` | 兩張過程／機制圖 | ★★ 過程診斷 |
 | `scripts/run.py` | 三情境時間序列 | ★ 快速冒煙 |
-| `docs/v4.md` | 設計真理來源（含 §0.5 修正） | ★★ 改設計要同步更新它 |
-| `docs/RESEARCH_REVIEW_v0.1.0.md` | 第一輪結果與限制清單 | ★★★ 這個 task 的起點 |
+| `docs/spec/v4.md` | 設計真理來源（含 §0.5 修正） | ★★ 改設計要同步更新它 |
+| `docs/implementation/RESEARCH_REVIEW_v0.1.0.md` | 第一輪結果與限制清單 | ★★★ 這個 task 的起點 |
 | `src/labor_sim/plotutil.py` | 中文字型 | ﹣ 不太會動 |
 
 ---
@@ -98,7 +101,7 @@
 3. **量化臨界前沿速度 r\***：沿 g 掃描，找每個 g 對應的崩潰臨界 r，畫成 `r*(g)` 曲線——把「前沿有結構性優勢」變成一條可引用的線。
 4.（可選）**最小敏感度檢查**：對核心尺度參數（F0、ability 中位、task_density）各 ±20%，確認結論方向不變（穩健性）。
 
-做完 1–3，更新一份 `RESEARCH_REVIEW_v0.2.0.md`，再決定 A 要先加哪個機制（我的順序建議：**內生前沿 → 需求面 → 分租**）。
+做完 1–3，更新一份 `docs/implementation/RESEARCH_REVIEW_v0.2.0.md`，再決定 A 要先加哪個機制（我的順序建議：**內生前沿 → 需求面 → 分租**）。
 
 ---
 
@@ -107,13 +110,13 @@
 - 不要在這個 task 同時加多個新機制（違反「一次一個」）。
 - 不要改 σ/a/F 的尺度校準，否則無法和 L_0.1.0 對照。
 - 新增指標用「加欄位」而非「改既有欄位」，保持向後相容（`run.py`/`sweep.py` 仍能跑）。
-- 任何設計變更，同步更新 `docs/v4.md`，並把結果版本號往上滾（L_0.2.0…）。
+- 任何設計變更，同步更新 `docs/spec/v4.md`，並把結果版本號往上滾（L_0.2.0…）。
 
 ---
 
 ## 7. 起手第一步（給新 task 的第一個動作）
 
-> 打開 `docs/RESEARCH_REVIEW_v0.1.0.md` 的「第五節 A. 便宜修正」，從第 1 項「拆開集中度指標」開始——在 `model.py` 的 `Result` 加 `gini_employed` 欄位、在主迴圈算 `gini(earn[earn>0])`，重跑 `sweep.py` 的分配相圖。**這一步就能判定第一輪最反直覺的結論是真是假。**
+> 打開 `docs/implementation/RESEARCH_REVIEW_v0.1.0.md` 的「第五節 A. 便宜修正」，從第 1 項「拆開集中度指標」開始——在 `model.py` 的 `Result` 加 `gini_employed` 欄位、在主迴圈算 `gini(earn[earn>0])`，重跑 `sweep.py` 的分配相圖。**這一步就能判定第一輪最反直覺的結論是真是假。**
 
 ---
 
