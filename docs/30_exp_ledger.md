@@ -28,6 +28,22 @@ results/<版本>/
 
 ---
 
+## L_0.2.2 — 引擎遷移:notebook-primary(重構,無機制變更)
+
+**狀態**:✅ 已執行(`notebooks/L_0.2.2.ipynb` → `results/L_0.2.2/`)。
+**動機**:程式碼規範定案(`01_sop` §9):一版一 notebook、cell 對子(md 標題+目的+驗證+機制 cell 限定 pseudocode)、凍結三閘門(Run All 全綠/回歸/產物齊)。
+
+改了什麼:
+
+1. v4.1 引擎(`model.py` 至 L_0.2.1 狀態)全數內嵌至 `notebooks/L_0.2.2.ipynb`(自足,約 300 行)。
+2. 輸出 helper 最小內嵌(CSV/summary/manifest,沿 §5 規範);新增引擎不變量 cell(值域/單調/飽和天花板/同 seed 逐位重現)與回歸 cell。
+3. `src/labor_sim/` 與 `scripts/` 凍結為 legacy(重現 L≤0.2.1 用);dev 依賴加 ipykernel、nbconvert。
+
+**Headline**:三情境 regime(collapse/reallocation/reallocation)與五項指標**與 L_0.2.1 完全一致**(相對容差 1e-9)→ 遷移零漂移;自 L_0.3.0 起 notebook-primary。
+**產物**:`results/L_0.2.2/`;無獨立 30_exp(patch、無新結論)。
+
+---
+
 ## L_0.2.1 — 校準地基（消除量測與機制的人為假象）
 
 **狀態**：程式已就緒，待執行（`scripts/run_v021.py` → `results/L_0.2.1/`）。

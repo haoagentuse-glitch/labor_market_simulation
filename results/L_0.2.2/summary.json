@@ -1,0 +1,40 @@
+{
+  "_version": "L_0.2.2",
+  "baseline_v022": {
+    "崩潰 r≫g (無學習)": {
+      "regime": "collapse",
+      "employment_t0": 0.84,
+      "employment_final": 0.021,
+      "gini_all_final": 0.9810323699629475,
+      "gini_employed_final": 0.0967795220451304,
+      "top10_final": 1.0000000000000002
+    },
+    "拉鋸 r≈g": {
+      "regime": "reallocation",
+      "employment_t0": 0.84,
+      "employment_final": 0.6985,
+      "gini_all_final": 0.3911316618597549,
+      "gini_employed_final": 0.12832020309199055,
+      "top10_final": 0.19330158285759702
+    },
+    "重配置 g≥r": {
+      "regime": "reallocation",
+      "employment_t0": 0.84,
+      "employment_final": 0.973,
+      "gini_all_final": 0.2139623357242475,
+      "gini_employed_final": 0.1921503964277982,
+      "top10_final": 0.16040148435750987
+    }
+  },
+  "regression_vs_L_0.2.1": {
+    "passed": true,
+    "tolerance": "rel 1e-9",
+    "metrics": [
+      "employment_t0",
+      "employment_final",
+      "gini_all_final",
+      "gini_employed_final",
+      "top10_final"
+    ]
+  }
+}

@@ -179,3 +179,50 @@ results/<版本>/
 - [ ] 沒有任何資訊是第二次全文出現?
 - [ ] 字數在上限內?
 - [ ] `00_index` 已同步?
+
+## 9. 程式碼規範(notebook-primary)
+
+### 9.1 一版一 notebook
+
+- 每個實驗版本恰好一本:`notebooks/<實驗版號>.ipynb`(如 `notebooks/L_0.3.0.ipynb`);版本字串與 `results/<版本>/`、`30_exp_<版號>` **三位一體**。
+- 凍結後不再改;下一版**複製前進**再修改(程式碼的 append-only)。
+- 自足性分級:引擎 ≤ ~500 行 → **全部內嵌**於 notebook(打開一個檔就看到那一版的一切);超過 → 引擎抽回套件、notebook 只做實驗層,manifest 記 git hash 鎖引擎版本。
+- 本專案:`src/labor_sim/` 與 `scripts/` 自 L_0.2.2 起凍結為 legacy(重現 L≤0.2.1 用),之後 notebook-primary。
+
+### 9.2 cell 對子(md 在前、code 在後)
+
+每個 code cell 前必有一個 markdown cell,固定格式:
+
+```
+### N.M 標題
+目的:這格產出什麼(一句)。
+驗證:怎麼知道它對——assert 什麼不變量 / 預期看到什麼數字或形狀。
+Pseudocode:(僅限機制/演算法 cell)≤10 行,寫邏輯與不變量;禁止逐行翻譯程式碼。
+```
+
+設定、IO、繪圖 cell **免** Pseudocode——它們的 pseudocode 只會是程式碼的逐行複述(slop)。
+
+### 9.3 notebook 固定結構
+
+```
+0 檔頭   (md:類別/狀態/版本/日期/驗收假設連結/與上一版差異)
+1 設定   (seed 顯式、路徑、輸出 helper)
+2 引擎   (機制 cell,依 9.2 附 pseudocode)
+3 引擎驗證(不變量 assert:值域、單調性、同 seed 重現)
+4 回歸驗證(重現上一版 summary.json,容差寫死在 assert)
+5 實驗   (本版要回答的問題)
+6 圖與輸出(圖必配 CSV;寫 summary.json + manifest.json)
+7 Headline(≤3 條、含數字;直接餵 30_exp)
+```
+
+### 9.4 凍結三閘門(全過才准凍結)
+
+1. **Restart & Run All 全綠**——殺掉亂序執行狀態,notebook 的第一死因。
+2. **回歸 cell 通過**——新增參數的預設值必須重現上一版數字;做不到就不是「加機制」而是「改了舊行為」,必須在 ledger 明說。
+3. **產物齊備**——`results/<版本>/` 有 CSV + summary.json + manifest.json(沿 §5);無 manifest 視同沒跑。
+
+### 9.5 其他
+
+- 繪圖用 Agg 後端(headless 可執行)。
+- 凍結後的 notebook **連輸出一起 commit**——它就是那一版可讀的實驗紀錄。
+- 驗證指令:`uv run jupyter nbconvert --to notebook --execute --inplace notebooks/<版號>.ipynb`。
