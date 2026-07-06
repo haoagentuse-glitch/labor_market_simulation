@@ -28,6 +28,22 @@ results/<版本>/
 
 ---
 
+## L_0.3.0 — AI 前沿天花板(第一個新機制 + 三實體架構落地)
+
+**狀態**:✅ 已執行(`notebooks/L_0.3.0.ipynb` → `results/L_0.3.0/`,git dc75e2c)。
+**動機**:實作 concept v5 的第一優先機制 F 天花板,檢驗「單調終局」是否被結構寫死(H1);同時把引擎重構成三實體 + 可插拔機制(架構定案,使用者拍板選項1)。
+
+改了什麼:
+
+1. 引擎重構為 `src/labor_sim/`:三實體 `Human`/`Matrix`/`Market` + `mechanisms/{learning,frontier_ceiling}` + `world.py`(hook 接口 pre_match/post_step,加機制不改主迴圈)。舊 `model.py`/`scripts/` 保留為 legacy。
+2. 新機制 `F_ceiling`(`dF/dt=r·(1−F/ceiling)`,None=閉式退化);新指標 `labor_share`、`near_frontier_share`;新體制 `human_premium`。
+3. notebook 轉實驗層(import 套件,不內嵌);四實驗 + 敏感度。
+
+**Headline**:(1) 回歸對 L_0.2.2 **零漂移**(max_rel_drift=0.0)。(2) 加天花板一個參數,終局從 2 種變 3 種(collapse/reallocation/**human_premium**)→ **H1 成立,單調終局定理被推翻**。(3) Engels' Pause 型脫鉤出現:就業 0.97 但 labor_share 跌 14.0pp(H2 定性成立、定量差 1pp 未達 15pp 門檻,誠實標註)。(4) 中介弧線先升後降(峰值第 10 月);ability_ceiling 敏感度零翻面。
+**產物**:`results/L_0.3.0/`　**檢討**:`docs/30_exp_L0.3.0.md`
+
+---
+
 ## L_0.2.2 — 引擎遷移:notebook-primary(重構,無機制變更)
 
 **狀態**:✅ 已執行(`notebooks/L_0.2.2.ipynb` → `results/L_0.2.2/`)。

@@ -19,6 +19,7 @@
 | [30_exp_ledger.md](30_exp_ledger.md) | exp | active | 實驗台帳:每版動機/改動/headline/產物 + results 歸檔規範 |
 | [30_exp_L0.1.0.md](30_exp_L0.1.0.md) | exp | frozen | 首輪四結論;其中集中度結論後被 L0.2.0 推翻(見檔頭後記) |
 | [30_exp_L0.2.0.md](30_exp_L0.2.0.md) | exp | frozen | 量尺校準:在職者 Gini 推翻假象、r\*(g) 斜率 0.425 封頂 ≈0.0043、±20% 零翻面 |
+| [30_exp_L0.3.0.md](30_exp_L0.3.0.md) | exp | frozen | F 天花板:終局從 2 種變 3 種(human_premium 浮現)→ H1 成立、單調終局定理推翻;Engels' Pause 脫鉤 14pp |
 | [40_log_20260703_open-endgame-discussion.md](40_log_20260703_open-endgame-discussion.md) | log | frozen | 終局開放性:單調終局批判、歷史校準點、螺旋史觀 → 6 項候選機制 |
 | [50_sparks.md](50_sparks.md) | sparks | active | 八則轉折:卡在哪→想通了什麼→為什麼關鍵 |
 | [90_raw_20260701_gemini-rgb.md](90_raw_20260701_gemini-rgb.md) | raw | frozen | Gemini RGB/HSV 原始提案(真金已入 concept v4) |
@@ -30,15 +31,15 @@
 
 ## 2. 目前進度(2026-07-04)
 
-- v4.1 核心穩定(σ/a/F + 排序匹配 + g + retrain_rate);L_0.1.0 四結論經 L_0.2.0 校準:1 推翻、1 修正、2 強化(`30_exp_ledger`)。
-- L_0.2.1 地基校準已執行:三情境 regime 完全不變、t=0 失業 0.254→0.160、在職者 Gini 排序不變(`results/L_0.2.1/summary.json`);待補 `ability_ceiling` 敏感度。
-- 概念線分兩軌並行:本體 `10_concept_v4_task-ontology`(λν,未實作)、動力學 `10_concept_v5_open-endgame`(2026-07-04 定案,6 項候選全數裁決,見 40_log 後記)。
-- spec 待加清單已依 v5 重排:F 天花板第一(= L_0.3.0);`labor_share` 指標近零成本先行。
-- docs 全面依 `01_sop` 標準化(2026-07-03):扁平命名、檔頭狀態列、模板對齊;規範升級為個人層 skill `research-docs`。
-- 程式碼規範定案並遷移完成(2026-07-04,`01_sop` §9):L_0.2.2 引擎內嵌 notebook,回歸驗證**零漂移**(與 L_0.2.1 五指標一致,容差 1e-9)。
+- 引擎重構為三實體(`Human`/`Matrix`/`Market`)+ 可插拔機制(`mechanisms/`),L_0.3.0 落地;回歸對 L_0.2.2 **零漂移**(max_rel_drift=0.0)。
+- **L_0.3.0(F 天花板)已執行**:加一個天花板參數,終局從 2 種變 3 種(collapse/reallocation/**human_premium**)→ **H1 成立,「單調全面取代」定理被推翻**(`30_exp_L0.3.0`)。H2(Engels' Pause)定性成立(就業 0.97、labor_share 跌 14pp),定量差 1pp 未達 15pp 門檻,列 L_0.3.1 補。
+- L_0.1.0→L_0.2.2 歷史:量尺校準(L_0.2.0)、地基校準(L_0.2.1)、notebook-primary 遷移(L_0.2.2),詳見 `30_exp_ledger`。
+- 概念線兩軌並行:本體 `10_concept_v4_task-ontology`(λν,未實作)、動力學 `10_concept_v5_open-endgame`(H1 已驗)。
+- 規範:文件 `01_sop`/skill `research-docs`;程式碼 notebook-primary + 三實體引擎(§9)。
 
 ## 3. 下一步
 
-1. **實作 L_0.3.0(F 天花板)**:複製 `notebooks/L_0.2.2.ipynb` 前進,加 `F_ceiling`(預設 ∞ 向後相容,回歸 cell 對 L_0.2.2)+ `labor_share` 指標;掃 (r, ceiling) 與 (g, ceiling) 相圖,驗收 concept v5 的 H1(≥3 吸引子)、H2(Engels' Pause 區)與中介職業弧線;順手補 `ability_ceiling` 敏感度(同輪便宜)。
-2. **λν 最小 2D 原型**(並行第二):`10_concept_v4` §5 草案,必含各向同性對照(H2 幾何 vs 機制)。
-3. 跑完任一項 → `30_exp_ledger` 加節 + 獨立 `30_exp_*` 檢討(嚴格由淺入深)。
+1. **L_0.3.1 補 H2 定量**(便宜):低 ceiling × 多 g 細掃 labor_share 跌幅找 ≥15pp 格 + human_premium 邊界多種子確認;labor_share 併入標準過程指標圖組。
+2. **接第二個機制**(concept v5 §5 序):內生前沿 + 編碼化回饋成對對照(spec §5 待加清單第 2 項)。
+3. **λν 最小 2D 原型**(並行本體線):`10_concept_v4` §5 草案,必含各向同性對照。
+- 每輪完成 → `30_exp_ledger` 加節 + 獨立 `30_exp_*` 檢討(由淺入深)。

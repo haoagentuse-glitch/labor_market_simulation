@@ -1,0 +1,157 @@
+{
+  "_version": "L_0.3.0",
+  "regression_vs_L_0.2.2": {
+    "passed": true,
+    "tolerance": "rel 1e-9",
+    "metrics": [
+      "employment_t0",
+      "employment_final",
+      "gini_all_final",
+      "gini_employed_final",
+      "top10_final"
+    ],
+    "scenarios": {
+      "崩潰 r>>g (無學習)": {
+        "regime": "collapse",
+        "employment_t0": 0.84,
+        "employment_final": 0.021,
+        "gini_all_final": 0.9810323699629475,
+        "gini_employed_final": 0.0967795220451304,
+        "top10_final": 1.0000000000000002,
+        "max_rel_drift": 0.0
+      },
+      "拉鋸 r~=g": {
+        "regime": "reallocation",
+        "employment_t0": 0.84,
+        "employment_final": 0.6985,
+        "gini_all_final": 0.3911316618597549,
+        "gini_employed_final": 0.12832020309199055,
+        "top10_final": 0.19330158285759702,
+        "max_rel_drift": 0.0
+      },
+      "重配置 g>=r": {
+        "regime": "reallocation",
+        "employment_t0": 0.84,
+        "employment_final": 0.973,
+        "gini_all_final": 0.2139623357242475,
+        "gini_employed_final": 0.1921503964277982,
+        "top10_final": 0.16040148435750987,
+        "max_rel_drift": 0.0
+      }
+    }
+  },
+  "exp1_phase_r_ceiling": {
+    "grid_density": "9x9",
+    "r_range": [
+      0.002,
+      0.006
+    ],
+    "ceiling_values_finite": [
+      0.4,
+      0.5142857142857143,
+      0.6285714285714286,
+      0.7428571428571429,
+      0.8571428571428572,
+      0.9714285714285714,
+      1.0857142857142859,
+      1.2
+    ],
+    "ceiling_includes_none": true,
+    "g_fixed": 0.004,
+    "regimes_observed": [
+      "collapse",
+      "human_premium",
+      "reallocation"
+    ],
+    "human_premium_appeared": true,
+    "elapsed_sec": 45.48535180091858
+  },
+  "exp2_phase_g_ceiling": {
+    "grid_density": "9x9",
+    "g_range": [
+      0.0,
+      0.008
+    ],
+    "ceiling_values_finite": [
+      0.4,
+      0.5142857142857143,
+      0.6285714285714286,
+      0.7428571428571429,
+      0.8571428571428572,
+      0.9714285714285714,
+      1.0857142857142859,
+      1.2
+    ],
+    "ceiling_includes_none": true,
+    "r_fixed": 0.004,
+    "regimes_observed": [
+      "collapse",
+      "human_premium",
+      "reallocation"
+    ],
+    "human_premium_appeared": true,
+    "elapsed_sec": 53.15500044822693
+  },
+  "exp3_engels_pause": {
+    "params": {
+      "r": 0.004,
+      "human_learning": 0.004,
+      "tasks_per_worker": 1.0,
+      "ability_ceiling": 3.0,
+      "F_ceiling": 0.5,
+      "seed": 0
+    },
+    "tail_employment_rate": 0.9715000000000003,
+    "labor_share_peak": 0.980681558696119,
+    "labor_share_final": 0.8405415073694421,
+    "labor_share_drop_pp": 14.014005132667684,
+    "employment_stable_ge_0.7": true
+  },
+  "exp4_intermediate_arc": {
+    "params": {
+      "r": 0.004,
+      "human_learning": 0.004,
+      "tasks_per_worker": 1.0,
+      "ability_ceiling": 3.0,
+      "F_ceiling": 0.5,
+      "seed": 0
+    },
+    "peak_month": 10,
+    "peak_value": 0.259,
+    "rises_then_falls": true
+  },
+  "sensitivity_ability_ceiling": {
+    "ceilings_tested": [
+      2.0,
+      3.0,
+      5.0
+    ],
+    "any_regime_flip": false,
+    "detail": {
+      "崩潰 r>>g (無學習)": {
+        "regimes_by_ability_ceiling": {
+          "2.0": "collapse",
+          "3.0": "collapse",
+          "5.0": "collapse"
+        },
+        "flipped": false
+      },
+      "拉鋸 r~=g": {
+        "regimes_by_ability_ceiling": {
+          "2.0": "reallocation",
+          "3.0": "reallocation",
+          "5.0": "reallocation"
+        },
+        "flipped": false
+      },
+      "重配置 g>=r": {
+        "regimes_by_ability_ceiling": {
+          "2.0": "reallocation",
+          "3.0": "reallocation",
+          "5.0": "reallocation"
+        },
+        "flipped": false
+      }
+    }
+  }
+}
